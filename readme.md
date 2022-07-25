@@ -18,6 +18,9 @@ CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 t
 
 ## 当然也可以单卡训练 直接运行 train.py 即可 (将parallel设置为false)
 
+## 测试预测结果的代码
+detect.py
+
 ## 实际效果比较 yolo v5 最好
 
 ## yolo v5
