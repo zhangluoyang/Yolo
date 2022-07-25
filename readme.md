@@ -20,15 +20,15 @@ CUDA_VISIBLE_DEVICES=0,1 python -m torch.distributed.launch --nproc_per_node=2 t
 
 ## yolo v5
 
-![image](image/yolov5.png)
+![image](https://raw.githubusercontent.com/zhangluoyang/Yolo/main/image/yolov5.png)
 
 ## yolo v4
 
-![image](image/yolov4.png)
+![image](https://raw.githubusercontent.com/zhangluoyang/Yolo/main/image/yolov4.png)
 
 ## yolo v3
 
-![image](image/yolov3.png)
+![image](https://raw.githubusercontent.com/zhangluoyang/Yolo/main/image/yolov3.png)
 
 ## 测试结果
 
