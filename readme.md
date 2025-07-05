@@ -1,6 +1,8 @@
 ## 模型权重、数据集
 预训练权重已经训练好的模型文件等可以通过网盘下载
 链接: https://pan.baidu.com/s/1a65cgfZ0FHX6RUw4yEJnng?pwd=1234 提取码: 1234
+## C++ 推理
+参考: https://github.com/zhangluoyang/luoyang ，实现 c++ onnxruntime 推理
 ## 样本格式
 参考 resource目录下面的文件格式
 其中 *_voc_*.txt 是 voc数据集，用于目标检测
