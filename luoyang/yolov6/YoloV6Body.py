@@ -1369,16 +1369,12 @@ class YoloV6Head(nn.Module):
 
         anchors_xx_yy, anchor_points_xy, num_anchors_list, stride_tensor = \
             self.__generate_train_anchors__(features=x)
-        # [b, 8500, 20]
+
         cls_score_tensor = torch.cat(cls_score_list, dim=1)
-        # [b, 8500, 4]
         reg_distribute_tensor = torch.cat(reg_distribute_list, dim=1)
-        # [8500, 2]
         scale_anchor_points_x_y = anchor_points_xy / stride_tensor
-        # [b, 8500, 4]
         scale_predict_xy_xy = self.bbox_decode(scale_anchor_points_x_y=scale_anchor_points_x_y,
                                                reg_distribute_tensor=reg_distribute_tensor)
-        # [b, 8500, 4]
         predict_xy_xy = scale_predict_xy_xy * stride_tensor
         return anchors_xx_yy, anchor_points_xy, num_anchors_list, \
                stride_tensor, cls_score_tensor, predict_xy_xy, reg_distribute_tensor

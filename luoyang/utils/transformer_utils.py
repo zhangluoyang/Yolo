@@ -440,7 +440,7 @@ def yolo_v6_predict_transformer(param: Yolo6Param):
                       image_std=param.image_std)]
 
 
-def yolo_v7_train_transformer(param: Yolo7Param):
+def yolo_v7_train_transformer(param: Union[Yolo7Param, Yolo8Param]):
     mosaic_head_transformer = [ReadImage(),
                                GenerateRect(),
                                HorizontalFlip()]
@@ -470,7 +470,7 @@ def yolo_v7_train_transformer(param: Yolo7Param):
     return [mosaic_head_transformer, mosaic_transformer, mosaic_tail_transformer], no_mosaic_transformer
 
 
-def yolo_v7_test_transformer(param: Union[Yolo5Param, Yolo7Param]):
+def yolo_v7_test_transformer(param: Union[Yolo5Param, Yolo7Param, Yolo8Param]):
     return [ReadImage(),
             GenerateRect(),
             ResizeImage(target_height=param.img_size,

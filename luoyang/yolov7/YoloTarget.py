@@ -95,21 +95,6 @@ class YoloCandidateTarget(nn.Module):
 
 class YoloSimpleOTATarget(nn.Module):
 
-    """
-    步骤1: 根据 ground_true 确定 候选样本
-        3个特征层 20 40 80 (按照输入的尺寸 640)
-        1.1 计算 ground_true 与 anchor 的长宽 比例
-        1.2 保留 长宽比在 1/4 ~ 4
-        1.3 根据ground_true中心点 确定 anchor中心点，再根据中心点所在的偏移坐标，扩展两个中心点
-        1.4 如果一个 anchor匹配到了两个ground_true则 选择iou最大的
-    步骤2: 确定正负样本
-        2.1 计算候选anchor与ground_true的iou值，计算sum()值，确定候选的样本数目，保证候选样本为1 dynamic_k
-        2.2 根据候选的anchor和ground_true计算 loss: 3*iou_loss + cls_loss
-        2.3 选择 loss 最小的 dynamic_k 作为正样本 其余作为负样本
-
-
-    """
-
     def __init__(self, image_size: Tuple[int, int],
                  strides: List[int],
                  num_classes: int):

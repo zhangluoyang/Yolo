@@ -96,8 +96,8 @@ class YoloV6Loss(LossLayer):
                                          ground_true_xx_yy=ground_true_xy_xy,
                                          mask_ground_true=mask_ground_true)
         except RuntimeError as e:
-            torch_utils.empty_cache()
             if self.current_epoch < self.warmup_epoch:
+                torch_utils.empty_cache()
                 target_labels, ground_true_xx_yy, target_scores, fg_mask = \
                     self.warmup_assigner(anchors_xx_yy=anchors_xx_yy.cpu(),
                                          num_anchors_list=num_anchors_list,

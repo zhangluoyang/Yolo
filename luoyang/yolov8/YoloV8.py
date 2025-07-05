@@ -1,8 +1,7 @@
 import torch
 from typing import *
-import torchvision.ops
 from luoyang.param.Param import Yolo8Param
-from luoyang.yolov8.YoloV8Body import YoloV8Body, Conv
+from luoyang.yolov8.YoloV8Body import YoloV8Body
 from luoyang.model.Layer import TaskLayer
 from luoyang.yolov8.YoloTarget import TaskAlignedAssigner
 from luoyang.yolov8.YoloV8Head import YoloV8Head
@@ -12,6 +11,7 @@ from luoyang.model.metric.DetectMetric import DetectMetric
 from luoyang.model.Layer import LossLayer
 from luoyang.yolov8.YoloV8Loss import YoloV8Loss
 
+import torchvision.ops
 
 class YoloV8(TaskLayer):
 
@@ -44,15 +44,16 @@ class YoloV8(TaskLayer):
         """
         x = self.body_net(images)
         predict_scores, predict_scaled_bounding_boxes, stride_tensor, anchor_points, predict_distribute = self.head(x)
-        predict_bounding_boxes = predict_scaled_bounding_boxes * stride_tensor
 
+        predict_bounding_boxes = predict_scaled_bounding_boxes * stride_tensor
+        #
         predict_cx_cy_w_h = torchvision.ops.box_convert(boxes=predict_bounding_boxes,
                                                         in_fmt="xyxy",
                                                         out_fmt="cxcywh")
-
-        predict_config = torch.clamp(predict_scores[:, :, 0:1], min=1, max=1)
-
+        predict_config, _ = torch.max(predict_scores, dim=-1, keepdim=True)
         batch_predicts = torch.cat([predict_cx_cy_w_h, predict_config, predict_scores], dim=-1)
+        # note
+        batch_predicts = batch_predicts.reshape(shape=(-1, int(batch_predicts.size(1)), int(batch_predicts.size(2))))
         return [batch_predicts]
 
     def _feed_forward(self, tensor_dict: Dict[str, Union[torch.Tensor, List[torch.Tensor]]]):
@@ -118,13 +119,7 @@ class YoloV8(TaskLayer):
         predict_scores = tensor_dict["predict_scores"]
         stride_tensor = tensor_dict["stride_tensor"]
         predict_bounding_boxes = predict_scaled_bounding_boxes * stride_tensor
-
-        batch = tensor_dict["batch_images"].size(0)
-
-        predict_config = torch.ones((batch,
-                                     predict_bounding_boxes.shape[1], 1),
-                                    device=predict_bounding_boxes.device,
-                                    dtype=predict_bounding_boxes.dtype)
+        predict_config, _ = torch.max(predict_scores, dim=-1, keepdim=True)
 
         batch_predicts = torch.cat([predict_bounding_boxes, predict_config, predict_scores], dim=-1)
 
@@ -164,11 +159,7 @@ class YoloV8(TaskLayer):
             param.requires_grad = True
 
     def fuse(self):
-        for m in self.modules():
-            if type(m) is Conv and hasattr(m, "bn"):
-                m.conv = torch_utils.fuse_conv_and_bn(conv=m.conv, bn=m.bn)
-                delattr(m, "bn")
-                m.forward = m.forward_fuse
+        raise NotImplemented
 
     def to_onnx(self, onnx_path: str):
         """
@@ -176,6 +167,7 @@ class YoloV8(TaskLayer):
         :param onnx_path:
         :return:
         """
+        # 重惨化
         self.eval()
         self.to("cpu")
         self.forward = self._forward
@@ -186,7 +178,7 @@ class YoloV8(TaskLayer):
                         "head_predicts": {0: "batch"}}
         torch.onnx.export(self, data, onnx_path,
                           export_params=True,
-                          opset_version=11,
+                          opset_version=12,
                           input_names=input_names,
                           output_names=output_names,
                           dynamic_axes=dynamic_axes)

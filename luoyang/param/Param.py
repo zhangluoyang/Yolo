@@ -214,10 +214,26 @@ class Yolo6Param(Param):
 
         self.pretrain_path = None
 
-        self.class_names = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
-                            'bus', 'car', 'cat', 'chair', 'cow',
-                            'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant',
-                            'sheep', 'sofa', 'train', 'tvmonitor']
+        self.class_names = ["aeroplane",
+                            "bicycle",
+                            "bird",
+                            "boat",
+                            "bottle",
+                            "bus",
+                            "car",
+                            "cat",
+                            "chair",
+                            "cow",
+                            "diningtable",
+                            "dog",
+                            "horse",
+                            "motorbike",
+                            "person",
+                            "pottedplant",
+                            "sheep",
+                            "sofa",
+                            "train",
+                            "tvmonitor"]
 
         self.class_num = len(self.class_names)
 
@@ -353,40 +369,6 @@ class Yolo7Param(Param):
         self.fine_tune_batch_size = 96
 
 
-class Yolo8Param(Param):
-    """
-    yolo v8 的配置参数
-    """
-
-    def __init__(self, batch_size: int = 6,
-                 m_type: str = "s"):
-        super(Yolo8Param, self).__init__(batch_size=batch_size)
-        assert m_type in ["n", "s", "m", "l", "x"]
-        self.m_type = m_type
-
-        self.use_dfl = True
-
-        self.pretrain_path = None
-
-        self.class_names = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
-                            'bus', 'car', 'cat', 'chair', 'cow',
-                            'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant',
-                            'sheep', 'sofa', 'train', 'tvmonitor']
-
-        self.class_num = len(self.class_names)
-
-        self.img_size: int = 640
-
-        self.strides = [8, 16, 32]
-
-        self.epochs = 300
-        self.fine_epochs = 1
-        self.train_epochs = 280
-
-        self.batch_size = 14
-        self.fine_tune_batch_size = 32
-
-
 class Yolo7FaceParam(Yolo7Param):
 
     def __init__(self, batch_size: int = 8,
@@ -518,3 +500,36 @@ class Yolo5PoseParam(Yolo5Param):
 
         self.batch_size = 32
         self.fine_tune_batch_size = 128
+
+
+class Yolo8Param(Param):
+
+    def __init__(self,
+                 batch_size: int = 8,
+                 m_type: str = "l"):
+        super(Yolo8Param, self).__init__(batch_size=batch_size)
+        self.dark_blocks: List[int] = [1, 2, 8, 8, 4]
+        self.m_type = m_type
+        self.pretrain_path = None
+
+        # 输入的图片名称
+        self.input_image = "image"
+        self.strides = [8, 16, 32]
+
+        self.feature_size = [80, 40, 20]
+
+        self.class_names = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
+                            'bus', 'car', 'cat', 'chair', 'cow',
+                            'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant',
+                            'sheep', 'sofa', 'train', 'tvmonitor']
+
+        self.class_num = len(self.class_names)
+
+        self.img_size: int = 640
+
+        self.epochs = 200
+        self.fine_epochs = 30
+        self.train_epochs = 150
+
+        self.batch_size = 20
+        self.fine_tune_batch_size = 96

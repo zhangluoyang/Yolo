@@ -42,14 +42,14 @@ class DflLoss(nn.Module):
         num_pos = fg_mask.sum()
         if num_pos > 0:
             bbox_mask = fg_mask.unsqueeze(-1).repeat([1, 1, 4])
-            pred_xy_xy_pos = torch.masked_select(scale_predict_xy_xy,
-                                                 bbox_mask).reshape([-1, 4])
+            predict_xy_xy_pos = torch.masked_select(scale_predict_xy_xy,
+                                                    bbox_mask).reshape([-1, 4])
             target_xy_xy_pos = torch.masked_select(
                 scale_ground_true_xx_yy, bbox_mask).reshape([-1, 4])
 
             bbox_weight = torch.masked_select(
                 target_scores.sum(-1), fg_mask).unsqueeze(-1)
-            loss_iou = self.iou_loss(pred_xy_xy_pos,
+            loss_iou = self.iou_loss(predict_xy_xy_pos,
                                      target_xy_xy_pos)
             # [anchor_num, ] -> [anchor_num, 1]
             loss_iou = loss_iou.unsqueeze(-1) * bbox_weight

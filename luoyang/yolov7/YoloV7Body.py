@@ -472,6 +472,7 @@ class YoloV7Body(nn.Module):
         p3_down_sample = self.down_sample1(p3)
         p4 = torch.cat([p3_down_sample, p4], 1)
         p4 = self.conv3_for_down_sample1(p4)
+
         p4_down_sample = self.down_sample2(p4)
         p5 = torch.cat([p4_down_sample, p5], 1)
         p5 = self.conv3_for_down_sample2(p5)

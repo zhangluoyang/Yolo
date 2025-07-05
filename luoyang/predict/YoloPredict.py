@@ -10,13 +10,11 @@ class YoloPredict(Predict):
                  device: str,
                  input_size: Tuple[int, int],
                  output_size: int,
-                 anchor_num: int = 3,
                  conf_threshold: float = 0.1,
                  nms_threshold: float = 0.3,
                  outputs: Union[None, List[str]] = None):
         super(YoloPredict, self).__init__(onnx_path=onnx_path,
                                           device=device)
-        self.anchor_num = anchor_num
         self.output_size = output_size
         self.conf_threshold = conf_threshold
         self.nms_threshold = nms_threshold
@@ -47,14 +45,12 @@ class YoloFacePredict(Predict):
                  point_num: int,
                  input_size: Tuple[int, int],
                  output_size: int,
-                 anchor_num: int = 3,
                  conf_threshold: float = 0.1,
                  nms_threshold: float = 0.3,
                  outputs: Union[None, List[str]] = None):
         super(YoloFacePredict, self).__init__(onnx_path=onnx_path,
                                               device=device)
         self.point_num = point_num
-        self.anchor_num = anchor_num
         self.output_size = output_size
         self.conf_threshold = conf_threshold
         self.nms_threshold = nms_threshold
@@ -87,14 +83,12 @@ class YoloPosePredict(Predict):
                  point_num: int,
                  input_size: Tuple[int, int],
                  output_size: int,
-                 anchor_num: int = 3,
                  conf_threshold: float = 0.1,
                  nms_threshold: float = 0.3,
                  outputs: Union[None, List[str]] = None):
         super(YoloPosePredict, self).__init__(onnx_path=onnx_path,
                                               device=device)
         self.point_num = point_num
-        self.anchor_num = anchor_num
         self.output_size = output_size
         self.conf_threshold = conf_threshold
         self.nms_threshold = nms_threshold

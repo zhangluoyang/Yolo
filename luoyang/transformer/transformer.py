@@ -2,6 +2,8 @@ import cv2
 import copy
 import random
 import numpy as np
+import base64
+from io import BytesIO
 from PIL import Image
 from PIL.JpegImagePlugin import JpegImageFile
 from typing import List, Tuple, Union, Dict, Any
@@ -117,6 +119,16 @@ class WarpAndResizeImage(Transformer):
             box[:, 2][box[:, 2] > self.target_width] = self.target_width
             box[:, 3][box[:, 3] > self.target_height] = self.target_height
             data_dict["rect_targets"] = box
+
+
+class DecodeImage(Transformer):
+
+    def transformer(self, data_dict: Union[dict, List[dict]]):
+        if isinstance(data_dict["image"], str):
+            # base64 转换为 Image
+            image = base64.b64decode(data_dict["image"])
+            image = BytesIO(image)
+            data_dict["image"] = Image.open(image)
 
 
 class ResizeImage(Transformer):

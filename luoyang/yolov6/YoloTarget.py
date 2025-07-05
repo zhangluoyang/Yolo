@@ -42,11 +42,9 @@ def select_highest_overlaps(mask_pos: torch.Tensor,
     fg_mask = mask_pos.sum(dim=-2)
     if fg_mask.max() > 1:
         mask_multi_gts = (fg_mask.unsqueeze(1) > 1).repeat([1, n_max_boxes, 1])
-        # 最大匹配的 ground_true_id
         max_overlaps_idx = overlaps.argmax(dim=1)
         is_max_overlaps = F.one_hot(max_overlaps_idx, n_max_boxes)
         is_max_overlaps = is_max_overlaps.permute(0, 2, 1).to(overlaps.dtype)
-        # 一个anchor匹配多个情况 则选择交并比最大的
         mask_pos = torch.where(mask_multi_gts, is_max_overlaps, mask_pos)
         fg_mask = mask_pos.sum(dim=-2)
     target_gt_idx = mask_pos.argmax(dim=-2)
@@ -131,7 +129,6 @@ class ATAssigner(nn.Module):
         # [batch, 1, anchor_num]
         mask_pos = is_pos * is_in_gts * mask_ground_true
         # [batch, anchor_num]
-        # 一个anchor 匹配多个 ground_true 则选择交并比最大的一个
         target_gt_idx, fg_mask, mask_pos = select_highest_overlaps(mask_pos,
                                                                    overlaps,
                                                                    self.n_max_boxes)
